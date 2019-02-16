@@ -28,7 +28,7 @@ async def state_machine_loop(statemachine, target):
 
         statemachine.run(target)
 
-        await asyncio.sleep(1)
+        await asyncio.sleep(statemachine.update_rate)
         
 
 async def poll_target(poller, target):
@@ -42,14 +42,14 @@ async def poll_target(poller, target):
         response = poller.read(target.comm.registers)
         target.update_from(response)
 
-        await asyncio.sleep(1)
+        await asyncio.sleep(poller.update_rate)
 
 async def email_loop(emailer):
     """ The email loop reads alarm file and dispatches alarm emails
     """
 
     while True:
-        await asyncio.sleep(30)
+        await asyncio.sleep(emailer.update_rate)
 
 def main(*args, **kwargs):
     """ Read configuration and launch three async loops: 

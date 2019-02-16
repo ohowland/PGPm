@@ -27,7 +27,7 @@ class TestPGPmEmail(unittest.TestCase):
         pass
 
     def test_config(self):
-        logging.debug('Bootstrap.ini sections: {}'.format(self.bootstrap.sections()))
+        logging.debug('bootstrap.ini sections: {}'.format(self.bootstrap.sections()))
         emailer = Email(self.bootstrap['EMAIL'])
 
         self.assertEqual(emailer.smtp_port, 465)

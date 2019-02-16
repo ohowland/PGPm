@@ -17,6 +17,7 @@ class Email(object):
                 self.recipient_list = [x.strip() for x in config['recipient_list'].split(',')]
                 self.smtp_port = int(config['port'])
                 self.smtp_server = config['smtp_server']
+                self.update_rate = int(config['update_rate'])
 
         def send(self, message):   
                 message = """\

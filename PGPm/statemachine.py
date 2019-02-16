@@ -45,6 +45,7 @@ class AlarmState(State):
 class Statemachine(object):
     def __init__(self, config):
         self.current_state = None
+        self.update_rate = int(config['update_rate'])
 
     def run(self, target):
         self.current_state.check_transitions(target)

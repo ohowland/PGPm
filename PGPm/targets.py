@@ -5,7 +5,7 @@
 
 import logging
 
-from PGPm import comm
+from PGPm.comm import Modbus
 
 class WindTurbine(object):
     def __init__(self):
@@ -44,6 +44,8 @@ class PowerWind(WindTurbine):
 class PowerWindComm(object):
     
     def __init__(self):
+        #register = namedtuple('modbus_register', 'name, address, type, function_code')
         self.registers = [
-            comm.Modbus.register('alarm_word', 1, 1, 0x03)
+            Modbus.register('alarm_word' , 1, 'U16', 0x03),
+            Modbus.register('status_word', 3, 'U16', 0x03),
         ]
