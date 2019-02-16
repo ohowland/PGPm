@@ -6,10 +6,11 @@
 import logging
 import unittest
 
+from PGPm.lib import config
+from PGPm.lib.email import Email
+
 from pathlib import Path
 from configparser import ConfigParser
-from PGPm.lib import email, config
-from collections import namedtuple
 
 class TestPGPmEmail(unittest.TestCase):
 
@@ -27,13 +28,13 @@ class TestPGPmEmail(unittest.TestCase):
 
     def test_config(self):
         logging.debug('Bootstrap.ini sections: {}'.format(self.bootstrap.sections()))
-        email_config = email.configure(self.bootstrap['EMAIL'])
+        emailer = Email(self.bootstrap['EMAIL'])
 
-        self.assertEqual(email_config.smtp_port, 465)
-        self.assertEqual(email_config.smtp_server, 'smtp.gmail.com')
-        self.assertEqual(email_config.username, 'support@howlandedgerton.com')
-        self.assertEqual(email_config.password, 'gH417xd^t!K5')
-        self.assertEqual(email_config.recipient_list, ['support@howlandedgerton.com', 'owen@howlandedgerton.com'])
+        self.assertEqual(emailer.smtp_port, 465)
+        self.assertEqual(emailer.smtp_server, 'smtp.gmail.com')
+        self.assertEqual(emailer.username, 'support@howlandedgerton.com')
+        self.assertEqual(emailer.password, 'gH417xd^t!K5')
+        self.assertEqual(emailer.recipient_list, ['support@howlandedgerton.com', 'owen@howlandedgerton.com'])
 
 if __name__ == '__main__':
     unittest.main()

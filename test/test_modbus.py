@@ -1,10 +1,12 @@
 import logging
 import unittest
 
+from PGPm.lib import config
+from PGPm.lib.comm import Modbus
+
 from pathlib import Path
 from configparser import ConfigParser
-from PGPm.lib import modbus, config
-from collections import namedtuple
+
 
 class TestPGPmModbus(unittest.TestCase):
 
