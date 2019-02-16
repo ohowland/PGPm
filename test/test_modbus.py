@@ -2,7 +2,7 @@ import logging
 import unittest
 
 from PGPm import config
-from PGPm.comm import Modbus
+from PGPm.poller import ModbusPoller
 from PGPm.targets import PowerWind
 
 from pathlib import Path

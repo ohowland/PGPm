@@ -11,9 +11,12 @@ from pymodbus.constants import Endian
 from configparser import ConfigParser
 from collections import namedtuple, OrderedDict
 
-
 class Modbus(object):
         register = namedtuple('modbus_register', 'name, address, type, function_code')
+        def __init__(self):
+                pass
+
+class ModbusPoller(Modbus):
 
         def __init__(self, config):
                 self.ip_addr = config['ip_addr']
@@ -23,7 +26,7 @@ class Modbus(object):
                 self.endian = self.endian_helper(config['endian'])
 
         def read(self, registers):
-                #try:
+                try:
                         client = ModbusTcpClient(self.ip_addr, port=self.port)
 
                         response = {}
@@ -39,7 +42,7 @@ class Modbus(object):
                         client.close()
                         return response
 
-                #except:
+                except:
                         return {}
 
         def endian_helper(self, endian_string):
@@ -47,6 +50,7 @@ class Modbus(object):
                         return Endian.Little
                 return Endian.Big
 
+        # TODO: Implement more datatypes
         def decode(self, incoming, type):
                 decoder = BinaryPayloadDecoder.fromRegisters(
                         incoming.registers, 
@@ -67,6 +71,7 @@ class Modbus(object):
 
                 return 0
 
+        # TODO: Implement more datatypes
         def size_of(self, type):
                 if type == 'U16' or 'I16':
                         return 1

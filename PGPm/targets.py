@@ -5,7 +5,7 @@
 
 import logging
 
-from PGPm.comm import Modbus
+from poller import Modbus
 
 class WindTurbine(object):
     def __init__(self):
@@ -20,6 +20,7 @@ class WindTurbine(object):
 
 class PowerWind(WindTurbine):
     def __init__(self):
+        super().__init__()
         self._comm = PowerWindComm()
         self._alarm_word = 0
 
@@ -36,10 +37,10 @@ class PowerWind(WindTurbine):
         self._alarm_word = value
 
     def update_from(self, polled_data):
-        for key, val in polled_data:
+        for key, val in polled_data.items():
             setattr(self, "_" + key, val)
 
-        self.alarm = self.alarm_word > 0
+        self._alarm = self.alarm_word > 0
 
 class PowerWindComm(object):
     

@@ -10,7 +10,7 @@ from collections import namedtuple
 
 email_config = namedtuple('email_config', 'smtp_port smtp_server recipient_list username password')
 
-class Email(object):
+class Emailer(object):
         def __init__(self, config):
                 self.username = config['username']
                 self.password = config['password']

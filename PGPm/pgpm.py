@@ -5,13 +5,12 @@
 
 import asyncio
 import os
-import email
 import logging
 
-from comm import Modbus
 from statemachine import PGPmStatemachine
 from targets import PowerWind
-from email import Email
+from emailer import Emailer
+from poller import ModbusPoller
 
 from datetime import datetime
 from configparser import ConfigParser
@@ -24,7 +23,7 @@ async def state_machine_loop(statemachine, target):
     """
     
     while True:
-        logging.debug('Current State: {}'.format(statemachine.current_state))
+        print('Current State: {}'.format(statemachine.current_state))
 
         statemachine.run(target)
 
@@ -37,9 +36,10 @@ async def poll_target(poller, target):
     """
 
     while True:
-        logging.debug('Polling Target @ {}'.format(datetime.now().time))
+        print('Polling Target @ {}'.format(datetime.now().time()))
 
         response = poller.read(target.comm.registers)
+        print(response)
         target.update_from(response)
 
         await asyncio.sleep(poller.update_rate)
@@ -57,8 +57,8 @@ def main(*args, **kwargs):
     """
 
     boostrap_config = kwargs['bootstrap']
-    emailer = Email(boostrap_config['EMAIL'])
-    poller = Modbus(boostrap_config['COMM'])
+    emailer = Emailer(boostrap_config['EMAIL'])
+    poller = ModbusPoller(boostrap_config['COMM'])
     statemachine = PGPmStatemachine(boostrap_config['STATEMACHINE'])
     
     """ target is shared between statemachine and poller.

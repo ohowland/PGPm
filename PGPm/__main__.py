@@ -1,7 +1,9 @@
-from PGPm.lib import pgpm
+import logging
+
+import pgpm
+
 from configparser import ConfigParser
 from pathlib import Path
-import logging
 
 def main(*args, **kwargs):
 
@@ -22,7 +24,7 @@ def main(*args, **kwargs):
         bootstrap_path = Path.cwd()
         while bootstrap_path.parent.stem == 'PGPm':
             bootstrap_path = bootstrap_path.parent
-        bootstrap_path = bootstrap_path.joinpath('PGPm', 'config', 'bootstrap.ini')
+        bootstrap_path = bootstrap_path.joinpath('config', 'bootstrap.ini')
         print('# Loading bootstrap configuration: {}'.format(bootstrap_path.as_posix()))
 
     bootstrap_parser = ConfigParser()
