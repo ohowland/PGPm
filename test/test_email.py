@@ -6,8 +6,8 @@
 import logging
 import unittest
 
-from PGPm.lib import config
-from PGPm.lib.email import Email
+from PGPm import config
+from PGPm.email import Email
 
 from pathlib import Path
 from configparser import ConfigParser

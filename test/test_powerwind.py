@@ -1,7 +1,7 @@
 import logging
 import unittest
 
-from PGPm.lib.targets import PowerWind
+from PGPm.targets import PowerWind
 
 class TestPGPmPowerWind(unittest.TestCase):
 

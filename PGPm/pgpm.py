@@ -19,27 +19,32 @@ from datetime import datetime
 from collections import namedtuple
 
 
-async def state_machine_loop(sm, target):
+async def state_machine_loop(statemachine, target):
     """ The state machine tracks the current software state: NoAlarm and Alarm.
     """
     
     while True:
-        sm.check_transition()
-        sm.actions()
-        logging.debug('Current State: {}'.format(sm.current_state))
+        logging.debug('Current State: {}'.format(statemachine.current_state))
+
+        statemachine.run(target)
+
         await asyncio.sleep(1)
         
 
-async def poll_target(modbus_config, target):
+async def poll_target(poller, target):
     """ The update loop continiously polls configured objects
         and pipes new alarms to the email loop.
     """
 
     while True:
         logging.debug('Polling Target @ {}'.format(datetime.now().time))
+
+        response = poller.read(target.comm.registers)
+        target.update_from(response)
+
         await asyncio.sleep(1)
 
-async def email_loop(email_config):
+async def email_loop(emailer):
     """ The email loop reads alarm file and dispatches alarm emails
     """
 
@@ -55,6 +60,10 @@ def main(*args, **kwargs):
     emailer = Email(boostrap_config['EMAIL'])
     poller = Modbus(boostrap_config['COMM'])
     statemachine = PGPmStatemachine(boostrap_config['STATEMACHINE'])
+    
+    """ target is shared between statemachine and poller.
+        poller updates target, statemachine reads target.
+    """
     target = PowerWind()
 
     loop = asyncio.get_event_loop()

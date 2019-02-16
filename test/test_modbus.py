@@ -1,8 +1,8 @@
 import logging
 import unittest
 
-from PGPm.lib import config
-from PGPm.lib.comm import Modbus
+from PGPm import config
+from PGPm.comm import Modbus
 
 from pathlib import Path
 from configparser import ConfigParser
