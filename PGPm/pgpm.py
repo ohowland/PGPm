@@ -39,7 +39,7 @@ async def poll_target(poller, target):
         print('Polling Target @ {}'.format(datetime.now().time()))
 
         response = poller.read(target.comm.registers)
-        # print(response)
+        print("response: {}".format(response))
         target.update_from(response)
 
         await asyncio.sleep(poller.update_rate)

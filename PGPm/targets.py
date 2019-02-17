@@ -5,7 +5,7 @@
 
 import logging
 
-from PGPm.poller import Modbus
+from poller import Modbus
 
 class WindTurbine(object):
     def __init__(self):
@@ -58,6 +58,6 @@ class PowerWindComm(object):
     def __init__(self):
         #register = namedtuple('modbus_register', 'name, address, type, function_code')
         self.registers = [
-            Modbus.register('active_alarm_level', 1, 'U16', 0x03),
-            Modbus.register('active_brake_level', 2, 'U16', 0x03),
+            Modbus.register('active_alarm_level', 0, 'U16', 0x03),
+            Modbus.register('active_brake_level', 1, 'U16', 0x03),
         ]
