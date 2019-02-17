@@ -32,7 +32,7 @@ class TestPGPmModbus(unittest.TestCase):
     def test_read(self):
         if self.REMOTE_TARGET:
             logging.debug('bootstrap.ini sections: {}'.format(self.bootstrap.sections()))
-            poller = Modbus(self.bootstrap['COMM'])
+            poller = ModbusPoller(self.bootstrap['COMM'])
             target = PowerWind()
             logging.debug('target registers: {}'.format(target.comm.registers))
 

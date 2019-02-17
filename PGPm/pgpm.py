@@ -21,14 +21,14 @@ from collections import namedtuple
 async def state_machine_loop(statemachine, target):
     """ The state machine tracks the current software state: NoAlarm and Alarm.
     """
-    
+
     while True:
         print('Current State: {}'.format(statemachine.current_state))
 
         statemachine.run(target)
 
         await asyncio.sleep(statemachine.update_rate)
-        
+
 
 async def poll_target(poller, target):
     """ The update loop continiously polls configured objects
@@ -39,17 +39,20 @@ async def poll_target(poller, target):
         print('Polling Target @ {}'.format(datetime.now().time()))
 
         response = poller.read(target.comm.registers)
-        print(response)
+        #print(response)
         target.update_from(response)
 
         await asyncio.sleep(poller.update_rate)
+
 
 async def email_loop(emailer):
     """ The email loop reads alarm file and dispatches alarm emails
     """
 
     while True:
+        emailer.check_events()
         await asyncio.sleep(emailer.update_rate)
+
 
 def main(*args, **kwargs):
     """ Read configuration and launch three async loops: 
@@ -60,7 +63,7 @@ def main(*args, **kwargs):
     emailer = Emailer(boostrap_config['EMAIL'])
     poller = ModbusPoller(boostrap_config['COMM'])
     statemachine = PGPmStatemachine(boostrap_config['STATEMACHINE'])
-    
+
     """ target is shared between statemachine and poller.
         poller updates target, statemachine reads target.
     """
