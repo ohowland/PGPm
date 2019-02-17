@@ -1,6 +1,6 @@
 import logging
 
-import pgpm
+import PGPm.pgpm
 
 from configparser import ConfigParser
 from pathlib import Path

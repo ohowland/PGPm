@@ -11,71 +11,75 @@ from pymodbus.constants import Endian
 from configparser import ConfigParser
 from collections import namedtuple, OrderedDict
 
+
 class Modbus(object):
-        register = namedtuple('modbus_register', 'name, address, type, function_code')
-        def __init__(self):
-                pass
+    register = namedtuple(
+        'modbus_register', 'name, address, type, function_code')
+
+    def __init__(self):
+        pass
+
 
 class ModbusPoller(Modbus):
 
-        def __init__(self, config):
-                self.ip_addr = config['ip_addr']
-                self.id = int(config['modbus_id'])
-                self.port = int(config['port'])
-                self.update_rate = int(config['update_rate'])
-                self.endian = self.endian_helper(config['endian'])
+    def __init__(self, config):
+        self.ip_addr = config['ip_addr']
+        self.id = int(config['modbus_id'])
+        self.port = int(config['port'])
+        self.update_rate = int(config['update_rate'])
+        self.endian = self.endian_helper(config['endian'])
 
-        def read(self, registers):
-                try:
-                        client = ModbusTcpClient(self.ip_addr, port=self.port)
+    def read(self, registers):
+        try:
+            client = ModbusTcpClient(self.ip_addr, port=self.port)
 
-                        response = {}
-                        for register in registers:
-                                incoming = client.read_holding_registers(
-                                        register.address, 
-                                        count = self.size_of(register.type), 
-                                        unit = self.id)
-                                result = self.decode(incoming, register.type)
+            response = {}
+            for register in registers:
+                incoming = client.read_holding_registers(
+                    register.address,
+                    count=self.size_of(register.type),
+                    unit=self.id)
+                result = self.decode(incoming, register.type)
 
-                                response.update({register.name: result})
-                        
-                        client.close()
-                        return response
+                response.update({register.name: result})
 
-                except:
-                        return {}
+            client.close()
+            return response
 
-        def endian_helper(self, endian_string):
-                if endian_string.lower == "little":
-                        return Endian.Little
-                return Endian.Big
+        except:
+            return {}
 
-        # TODO: Implement more datatypes
-        def decode(self, incoming, type):
-                decoder = BinaryPayloadDecoder.fromRegisters(
-                        incoming.registers, 
-                        byteorder=self.endian,
-                        wordorder=self.endian
-                        )
+    def endian_helper(self, endian_string):
+        if endian_string.lower == "little":
+            return Endian.Little
+        return Endian.Big
 
-                if type == 'U16':
-                        return decoder.decode_16bit_uint()
-                elif type == 'I16':
-                        return decoder.decode_16bit_int()
-                elif type == 'U32':
-                        return decoder.decode_32bit_uint()
-                elif type == 'I32':
-                        return decoder.decode_32bit_int()
-                elif type == 'F32':
-                        return decoder.decode_32bit_float()
+    # TODO: Implement more datatypes
+    def decode(self, incoming, type):
+        decoder = BinaryPayloadDecoder.fromRegisters(
+            incoming.registers,
+            byteorder=self.endian,
+            wordorder=self.endian
+        )
 
-                return 0
+        if type == 'U16':
+            return decoder.decode_16bit_uint()
+        elif type == 'I16':
+            return decoder.decode_16bit_int()
+        elif type == 'U32':
+            return decoder.decode_32bit_uint()
+        elif type == 'I32':
+            return decoder.decode_32bit_int()
+        elif type == 'F32':
+            return decoder.decode_32bit_float()
 
-        # TODO: Implement more datatypes
-        def size_of(self, type):
-                if type == 'U16' or 'I16':
-                        return 1
-                elif type == 'U32' or 'I32' or 'F32':
-                        return 2
-                else: 
-                        return 0
+        return 0
+
+    # TODO: Implement more datatypes
+    def size_of(self, type):
+        if type == 'U16' or 'I16':
+            return 1
+        elif type == 'U32' or 'I32' or 'F32':
+            return 2
+        else:
+            return 0

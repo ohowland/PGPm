@@ -6,6 +6,7 @@ import logging
 
 from pathlib import Path
 
+
 def get(filename, **kwargs):
     """ Return path to the filename, file must exist at top level of config folder
     """
