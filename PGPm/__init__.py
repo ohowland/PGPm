@@ -1,1 +1,1 @@
-name = "pgpm"
+name = "PGPm"
