@@ -51,7 +51,7 @@ class AlarmState(State):
 
     def actions(self, target):
         if self.new_state is True:
-            record_alarm(target.alarm_word)
+            record_alarm(target.active_alarm_level)
 
 
 class Statemachine(object):
@@ -76,11 +76,11 @@ class PGPmStatemachine(Statemachine):
         self.current_state = NoAlarmState()
 
 
-def record_alarm(alarm_word):
+def record_alarm(active_alarm_level):
     try:
         timestamp = datetime.utcnow()
         with open('events/alarms.txt', 'a+') as file:
-            file.write("[{}] Alarm: {}\n".format(timestamp, alarm_word))
+            file.write("[{}] Active Alarm Level: {}\n".format(timestamp, alarm_word))
 
     except:
         logging.warning('file write error')
