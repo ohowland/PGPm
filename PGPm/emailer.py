@@ -6,6 +6,7 @@
 import smtplib
 import ssl
 import logging
+import os
 
 from configparser import ConfigParser
 from collections import namedtuple
@@ -33,7 +34,7 @@ class Emailer(object):
                 server.sendmail(self.username, email, message)
 
     def build_message(self, alarms):
-        message = 'Subject: Alarm at Site - {}\n\n'.format(self.site)
+        message = 'Subject: Alarm: {}\n\n'.format(self.site)
         for alarm in alarms:
             message += alarm
         return message
@@ -45,6 +46,8 @@ class Emailer(object):
                 alarms = file.readlines()
         except:
             logging.warning('failed to read events')
+            if not os.path.exists('events/alarms.txt'):
+                open('events/alarms.txt', 'w+').close()
 
         if alarms:
             try:

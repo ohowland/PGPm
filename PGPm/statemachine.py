@@ -80,7 +80,7 @@ def record_alarm(active_alarm_level):
     try:
         timestamp = datetime.utcnow()
         with open('events/alarms.txt', 'a+') as file:
-            file.write("[{}] Active Alarm Level: {}\n".format(timestamp, alarm_word))
+            file.write("[{}] Active Alarm Level: {}\n".format(timestamp, active_alarm_level))
 
-    except:
-        logging.warning('file write error')
+    except Exception as e:
+        logging.warning(e)
