@@ -5,7 +5,7 @@
 
 import logging
 
-from poller import Modbus
+from .poller import Modbus
 
 class WindTurbine(object):
     def __init__(self):
