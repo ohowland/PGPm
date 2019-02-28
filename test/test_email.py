@@ -5,6 +5,7 @@
 
 import logging
 import unittest
+import PGPm
 
 from PGPm import config
 from PGPm.emailer import Emailer
@@ -38,8 +39,12 @@ class TestPGPmEmail(unittest.TestCase):
         self.assertEqual(emailer.smtp_server, 'smtp.gmail.com')
         self.assertEqual(emailer.username, 'support@howlandedgerton.com')
         self.assertEqual(emailer.password, 'gH417xd^t!K5')
-        self.assertEqual(emailer.recipient_list, [
-                         'support@howlandedgerton.com', 'owen@howlandedgerton.com'])
+        self.assertEqual(emailer.recipient_list, ['support@howlandedgerton.com'])
+
+
+    def test_email(self):
+        emailer = Emailer(self.bootstrap['EMAIL'])
+        emailer.check_events()
 
 
 if __name__ == '__main__':

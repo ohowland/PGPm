@@ -10,6 +10,7 @@ import os
 
 from configparser import ConfigParser
 from collections import namedtuple
+from datetime import datetime
 
 email_config = namedtuple(
     'email_config', 'smtp_port smtp_server recipient_list username password')
@@ -25,18 +26,19 @@ class Emailer(object):
         self.smtp_server = config['smtp_server']
         self.update_rate = int(config['update_rate'])
         self.site = config['site_name']
-
+        
     def send(self, message):
         context = ssl.create_default_context()
         with smtplib.SMTP_SSL(self.smtp_server, self.smtp_port, context=context) as server:
             server.login(self.username, self.password)
-            for email in self.recipient_list:
-                server.sendmail(self.username, email, message)
+            server.sendmail(self.username, self.recipient_list, message)
 
     def build_message(self, alarms):
         message = 'Subject: Alarm: {}\n\n'.format(self.site)
         for alarm in alarms:
             message += alarm
+
+        print('message: {}'.format(message))
         return message
 
     def check_events(self):
@@ -49,11 +51,12 @@ class Emailer(object):
             if not os.path.exists('events/alarms.txt'):
                 open('events/alarms.txt', 'w+').close()
 
+        logging.debug("ALARMS: {}".format(alarms))
         if alarms:
             try:
                 open('events/alarms.txt', 'w').close()
                 message = self.build_message(alarms)
-                print('Sending email:\n {}'.format(message))
+                logging.debug('Sending email:\n {}'.format(message))
                 self.send(message)
             except Exception as e:
                 logging.warning('failed to send email, {}'.format(e))
