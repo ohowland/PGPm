@@ -59,20 +59,20 @@ def main(*args, **kwargs):
         polling, emailing, and state machine.
     """
 
+    loop = asyncio.get_event_loop()
     boostrap_config = kwargs['bootstrap']
-    emailer = Emailer(boostrap_config['EMAIL'])
-    poller = ModbusPoller(boostrap_config['COMM'])
-    statemachine = PGPmStatemachine(boostrap_config['STATEMACHINE'])
+    for turbine in boostrap_config['TURBINES']:
+        emailer = Emailer(boostrap_config['EMAIL'])
+        poller = ModbusPoller(boostrap_config[turbine + '_COMM'])
+        statemachine = PGPmStatemachine(boostrap_config['STATEMACHINE'])
 
     """ target is shared between statemachine and poller.
         poller updates target, statemachine reads target.
     """
-    target = PowerWind()
-
-    loop = asyncio.get_event_loop()
-    loop.create_task(poll_target(poller, target))
-    loop.create_task(email_loop(emailer))
-    loop.create_task(state_machine_loop(statemachine, target))
+        target = PowerWind()
+        loop.create_task(poll_target(poller, target))
+        loop.create_task(email_loop(emailer))
+        loop.create_task(state_machine_loop(statemachine, target))
 
     try:
         loop.run_forever()

@@ -26,7 +26,11 @@ class Emailer(object):
         self.smtp_server = config['smtp_server']
         self.update_rate = int(config['update_rate'])
         self.site = config['site_name']
-        
+        self.timeout = config['timeout']
+            
+        self.sent_timestamp = datetime.fromordinal(1)
+    
+
     def send(self, message):
         context = ssl.create_default_context()
         with smtplib.SMTP_SSL(self.smtp_server, self.smtp_port, context=context) as server:
@@ -42,7 +46,14 @@ class Emailer(object):
         return message
 
     def check_events(self):
+        if datetime.now() - self.sent_timestamp > self.timeout:
+            self.get_new_events()
+        else:
+            pass
+
+    def get_new_events(self):
         alarms = []
+
         try:
             with open('events/alarms.txt', 'r+') as file:
                 alarms = file.readlines()
@@ -58,5 +69,6 @@ class Emailer(object):
                 message = self.build_message(alarms)
                 logging.debug('Sending email:\n {}'.format(message))
                 self.send(message)
+                self.sent_timestamp = datetime.now()
             except Exception as e:
                 logging.warning('failed to send email, {}'.format(e))

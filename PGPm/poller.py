@@ -28,6 +28,7 @@ class ModbusPoller(Modbus):
         self.port = int(config['port'])
         self.update_rate = int(config['update_rate'])
         self.endian = self.endian_helper(config['endian'])
+        self.offset = int(config['offset'])
 
     def read(self, registers):
         try:
@@ -36,7 +37,7 @@ class ModbusPoller(Modbus):
             response = {}
             for register in registers:
                 incoming = client.read_holding_registers(
-                    register.address,
+                    register.address + self.offset,
                     count=self.size_of(register.type),
                     unit=self.id)
                 result = self.decode(incoming, register.type)
