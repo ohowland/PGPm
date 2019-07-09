@@ -61,14 +61,15 @@ def main(*args, **kwargs):
 
     loop = asyncio.get_event_loop()
     boostrap_config = kwargs['bootstrap']
-    for turbine in boostrap_config['TURBINES']:
+    turbine_list = [t.strip() for t in boostrap_config['TURBINES']['turbine_list'].split(',')]
+    for turbine in turbine_list:
         emailer = Emailer(boostrap_config['EMAIL'])
         poller = ModbusPoller(boostrap_config[turbine + '_COMM'])
         statemachine = PGPmStatemachine(boostrap_config['STATEMACHINE'])
 
-    """ target is shared between statemachine and poller.
-        poller updates target, statemachine reads target.
-    """
+        """ target is shared between statemachine and poller.
+            poller updates target, statemachine reads target.
+        """
         target = PowerWind()
         loop.create_task(poll_target(poller, target))
         loop.create_task(email_loop(emailer))

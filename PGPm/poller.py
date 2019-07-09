@@ -31,6 +31,7 @@ class ModbusPoller(Modbus):
         self.offset = int(config['offset'])
 
     def read(self, registers):
+        print("polling: {}".format(self.ip_addr))
         try:
             client = ModbusTcpClient(self.ip_addr, port=self.port)
 
