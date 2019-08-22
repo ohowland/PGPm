@@ -26,7 +26,7 @@ class Emailer(object):
         self.smtp_server = config['smtp_server']
         self.update_rate = int(config['update_rate'])
         self.site = config['site_name']
-        self.timeout = config['timeout']
+        self.timeout = int(config['timeout'])
             
         self.sent_timestamp = datetime.fromordinal(1)
     
@@ -46,7 +46,7 @@ class Emailer(object):
         return message
 
     def check_events(self):
-        if datetime.now() - self.sent_timestamp > self.timeout:
+        if (datetime.now() - self.sent_timestamp).total_seconds() > self.timeout:
             self.get_new_events()
         else:
             pass

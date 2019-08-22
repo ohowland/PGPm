@@ -41,6 +41,7 @@ class ModbusPoller(Modbus):
                     register.address + self.offset,
                     count=self.size_of(register.type),
                     unit=self.id)
+                print(incoming)
                 result = self.decode(incoming, register.type)
 
                 response.update({register.name: result})
