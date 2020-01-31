@@ -1,4 +1,1 @@
-# PowerGrid Partners Monitor Package
-
-test distribution
-
+# Power Wind 900 wind turbine monitor package
